@@ -10,6 +10,7 @@ This project is mainly for me to learn OpenGL, graphics programming, and physics
 - Draw stuff on the screen ✅
 - Show fps count
 - Have a way to delete objects outside a certain area during runtime
+- Implement quaternions for rotation instead of Euler angles
 
 ## Gravity To-do list
 - Calculate the distance between different objects/planets
