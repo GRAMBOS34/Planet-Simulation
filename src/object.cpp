@@ -40,5 +40,3 @@ void Object::Move(glm::vec3 velocity, float deltaTime){
 void Object::Scale(glm::vec3 newScale){
     transform.GetScale() = newScale;
 }
-
-// lmfao
