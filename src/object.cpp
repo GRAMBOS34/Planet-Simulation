@@ -3,7 +3,7 @@
 
 /**
  * @brief Construct a new Object::Object object
- * 
+ *
  * @param mesh - Mesh/vertex data of the object
  * @param glShapeType - The type of shape expected for the draw function
  * @param position - The object's initial position. At the origin by default
@@ -23,9 +23,9 @@ Object::Object(
 
 /**
  * @brief Update the current position with the velocity vector
- * 
- * @param velocity 
- * @param deltaTime 
+ *
+ * @param velocity
+ * @param deltaTime
  */
 void Object::Move(glm::vec3 velocity, float deltaTime){
     // * new position = old position + (velocity * time between frames)
@@ -34,9 +34,11 @@ void Object::Move(glm::vec3 velocity, float deltaTime){
 
 /**
  * @brief Update the scale of the object
- * 
- * @param newScale 
+ *
+ * @param newScale
  */
 void Object::Scale(glm::vec3 newScale){
     transform.GetScale() = newScale;
 }
+
+// lmfao
