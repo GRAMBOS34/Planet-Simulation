@@ -13,5 +13,6 @@ This project is mainly for me to learn OpenGL, graphics programming, and physics
 - Implement quaternions for rotation instead of Euler angles
 
 ## Gravity To-do list
-- Calculate the distance between different objects/planets
-- Influence the velocity of the objects
+- Calculate the distance between different objects/planets ✅
+- Influence the path of the objects using a force vector ✅
+- Influence the path of the objects using gravity
