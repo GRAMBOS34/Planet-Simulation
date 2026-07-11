@@ -19,7 +19,7 @@ public:
         glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f)
     );
 
-    void Move(glm::vec3 velocity, float deltaTime);
+    void Move(glm::vec3 acceleration, float deltaTime);
     void Scale(glm::vec3 newScale);
 
     // Creates a default destructor
@@ -45,6 +45,7 @@ private:
 
     // Physics values
     // But the calculations will be done somewhere else
+    glm::vec3 m_currentPosition = transform.GetPosition();
     glm::vec3 m_velocity = glm::vec3(0, 0, 0);
     float m_mass;
 };

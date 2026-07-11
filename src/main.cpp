@@ -1,5 +1,7 @@
+#include <cmath>
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include <GL/glew.h>
 #include <SDL2/SDL_timer.h>
@@ -44,13 +46,17 @@ const float DISPLAY_WIDTH = 1600.0f;
 const float DISPLAY_HEIGHT = 900.0f;
 const float LINE_WIDTH_PIXELS = 2.5f;
 
+
+// Physics constants
+const double GRAVITATIONAL_CONSTANT = 2;
+
 int main() {
    Display display(DISPLAY_WIDTH, DISPLAY_HEIGHT, "Physics Sim"); // Initialize the display window
 
    Shader shader("res/basicShader"); // Initialize the vertex and fragment shaders
 
    float aspectRatio = DISPLAY_WIDTH/DISPLAY_HEIGHT;
-   Camera camera(glm::vec3(0.5f, 0, 2.0f), glm::radians(70.0f), aspectRatio, 0.01f, 100.0f); // initialize the camera
+   Camera camera(glm::vec3(0.5f, 0, 10.0f), glm::radians(70.0f), aspectRatio, 0.01f, 100.0f); // initialize the camera
 
    Renderer renderer(&camera, &shader); // initialize the renderer
 
@@ -64,9 +70,12 @@ int main() {
 
    // Create the objects in the scene
    Mesh circle = Circle(0.2f, 18);
-   Object planet(&circle, GL_TRIANGLE_FAN, glm::vec3(0.5f, 0, 0));
+   Object planet(&circle, GL_TRIANGLE_FAN, glm::vec3(0.5f, 0.5f, 0));
 
-   Object otherPlanet(&circle, GL_TRIANGLE_FAN, glm::vec3(-0.5f, 0, 0));
+   Object otherPlanet(&circle, GL_TRIANGLE_FAN, glm::vec3(0, 0, 0));
+
+   planet.SetMass(10);
+   otherPlanet.SetMass(10);
 
    while (!display.IsClosed()){
         glClearColor(0.0f, 0.15f, 0.3f, 1.0f); // Sets the background color
@@ -75,23 +84,30 @@ int main() {
         // Bind the shader
         shader.Bind();
 
-        // Set line width
-        glLineWidth(LINE_WIDTH_PIXELS);
-
-        // Calculate deltaTime
+        // * Calculate deltaTime
         float currentFrame = SDL_GetTicks() / 1000.0f;
         float deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        glm::vec3 velocity(0.5f, 0.5f, 0);
-
-        planet.Move(velocity, deltaTime);
-        // planet.Scale(glm::vec3(position, position, 0));
-        // planet.transform.SetRotation(glm::vec3(0, position, 0));
-
+        // * Initialize a line
+        glLineWidth(LINE_WIDTH_PIXELS); // Set line width
         Mesh line = Line(planet.transform.GetPosition(), otherPlanet.transform.GetPosition());
         Object distLine(&line, GL_LINES);
 
+        // * Physics stuff
+        // Let's start with something simple:
+        // Given a force vector F, calculate the velocity vector of the object and apply it to the object
+        // a = F * m
+
+        glm::vec3 force(0.2f, 0, 0);
+
+        glm::vec3 acceleration = force * planet.GetMass();
+
+        planet.Move(acceleration, deltaTime);
+
+        // ! std::cout << "Planet at: (" << planet.transform.GetPosition().x << ", " << planet.transform.GetPosition().y << ")\n";
+
+        // * Draw the planet
         otherPlanet.SetColor(glm::vec3(1.0f, 0, 0));
         distLine.SetColor(glm::vec3(0,0,0));
 
