@@ -19,21 +19,16 @@ Object::Object(
     // if i just declared a default value in the private
     // section of the class
     m_color = glm::vec3(1.0f, 1.0f, 1.0f);
-    m_velocity = glm::vec3(0,0,0);
+    m_acceleration = glm::vec3(0,0,0);
 }
 
-/**
- * @brief Update the current position with the velocity vector
- *
- * @param velocity
- * @param deltaTime
- */
-void Object::Move(glm::vec3 acceleration, float deltaTime){
-    // * This line is essentially integrating acceleration to get velocity
-    // * But, each iteration of the update loop integrates this again to get position
-
+void Object::Accelerate(glm::vec3 acceleration){
     // * new position = old position + (velocity * time between frames)
-    transform.GetPosition() += acceleration * deltaTime;
+    m_velocity += acceleration;
+}
+
+void Object::UpdatePosition(float deltaTime){
+    transform.GetPosition() += m_velocity / 1000.0f * deltaTime;
 }
 
 /**

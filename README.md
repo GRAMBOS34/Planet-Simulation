@@ -16,3 +16,4 @@ This project is mainly for me to learn OpenGL, graphics programming, and physics
 - Calculate the distance between different objects/planets ✅
 - Influence the path of the objects using a force vector ✅
 - Influence the path of the objects using gravity
+- Use the real values for mass in the simulation

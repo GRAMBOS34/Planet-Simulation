@@ -19,7 +19,9 @@ public:
         glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f)
     );
 
-    void Move(glm::vec3 acceleration, float deltaTime);
+    void UpdatePosition(float deltaTime);
+
+    void Accelerate(glm::vec3 acceleration);
     void Scale(glm::vec3 newScale);
 
     // Creates a default destructor
@@ -27,14 +29,15 @@ public:
 
     // Getters
     inline GLenum GetShapeType() { return m_shapeTypeVal; }
+    inline glm::vec3 GetAcceleration() { return m_acceleration; }
     inline glm::vec3 GetVelocity() { return m_velocity; }
     inline glm::vec3 GetColor() { return m_color; }
     inline float GetMass() { return m_mass; }
 
     // Setters
-    inline void SetVelocity(const glm::vec3& newVelocity) { m_velocity = newVelocity; }
     inline void SetColor(const glm::vec3& newColor) { m_color = newColor; }
     inline void SetMass(const float newMass) { m_mass = newMass; }
+    inline void SetVelocity(const glm::vec3& newVelocity) { m_velocity = newVelocity; }
 
 private:
     Camera* m_camera = nullptr;
@@ -45,7 +48,7 @@ private:
 
     // Physics values
     // But the calculations will be done somewhere else
-    glm::vec3 m_currentPosition = transform.GetPosition();
+    glm::vec3 m_acceleration = glm::vec3(0, 0, 0);
     glm::vec3 m_velocity = glm::vec3(0, 0, 0);
     float m_mass;
 };

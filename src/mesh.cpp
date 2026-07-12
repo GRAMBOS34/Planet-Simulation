@@ -2,7 +2,7 @@
 
 /**
  * @brief Construct a new Mesh:: Mesh object
- * 
+ *
  * @param vertices - Vertex data of the mesh
  * @param numVertices - the number of verticies
  */
@@ -23,7 +23,7 @@ Mesh::Mesh(Vertex *vertices, unsigned int numVertices){
     );
 
     // Tell the GPU how to interpret said data
-    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(0); // 0 here is the id of the vertex shader (i think i just followed a tutorial tbh)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
     glBindVertexArray(0);

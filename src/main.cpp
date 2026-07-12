@@ -1,6 +1,7 @@
 #include <cmath>
 #include <string>
 #include <vector>
+#include <cmath>
 #include <iostream>
 
 #include <GL/glew.h>
@@ -46,9 +47,8 @@ const float DISPLAY_WIDTH = 1600.0f;
 const float DISPLAY_HEIGHT = 900.0f;
 const float LINE_WIDTH_PIXELS = 2.5f;
 
-
 // Physics constants
-const double GRAVITATIONAL_CONSTANT = 2;
+const float GRAVITATIONAL_CONSTANT = 6.674e-2;
 
 int main() {
    Display display(DISPLAY_WIDTH, DISPLAY_HEIGHT, "Physics Sim"); // Initialize the display window
@@ -69,13 +69,15 @@ int main() {
    std::vector<Object> SceneObjects;
 
    // Create the objects in the scene
-   Mesh circle = Circle(0.2f, 18);
-   Object planet(&circle, GL_TRIANGLE_FAN, glm::vec3(0.5f, 0.5f, 0));
+   Mesh circle = Circle(0.5f, 18);
+   Object Moon(&circle, GL_TRIANGLE_FAN, glm::vec3(5.0f, 0, 0));
 
-   Object otherPlanet(&circle, GL_TRIANGLE_FAN, glm::vec3(0, 0, 0));
+   Object Earth(&circle, GL_TRIANGLE_FAN, glm::vec3(0, 0, 0));
 
-   planet.SetMass(10);
-   otherPlanet.SetMass(10);
+   Moon.SetMass(7.348);
+   Moon.SetVelocity(glm::vec3(0, 1000.0f, 0));
+
+   Earth.SetMass(5.972e2);
 
    while (!display.IsClosed()){
         glClearColor(0.0f, 0.15f, 0.3f, 1.0f); // Sets the background color
@@ -91,28 +93,32 @@ int main() {
 
         // * Initialize a line
         glLineWidth(LINE_WIDTH_PIXELS); // Set line width
-        Mesh line = Line(planet.transform.GetPosition(), otherPlanet.transform.GetPosition());
+        Mesh line = Line(Moon.transform.GetPosition(), Earth.transform.GetPosition());
         Object distLine(&line, GL_LINES);
 
         // * Physics stuff
-        // Let's start with something simple:
-        // Given a force vector F, calculate the velocity vector of the object and apply it to the object
-        // a = F * m
+        float dx = Earth.transform.GetPosition().x - Moon.transform.GetPosition().x;
+        float dy = Earth.transform.GetPosition().y - Moon.transform.GetPosition().y;
 
-        glm::vec3 force(0.2f, 0, 0);
+        float distance = std::hypot(dx, dy);
 
-        glm::vec3 acceleration = force * planet.GetMass();
+        float accelerationScalar = GRAVITATIONAL_CONSTANT * Earth.GetMass() / pow(distance, 2);
 
-        planet.Move(acceleration, deltaTime);
+        glm::vec3 acceleration = accelerationScalar * glm::vec3(dx, dy, 0);
 
-        // ! std::cout << "Planet at: (" << planet.transform.GetPosition().x << ", " << planet.transform.GetPosition().y << ")\n";
+        Moon.Accelerate(acceleration);
+        std::cout << accelerationScalar << "\n";
 
         // * Draw the planet
-        otherPlanet.SetColor(glm::vec3(1.0f, 0, 0));
+        Earth.SetColor(glm::vec3(1.0f, 1.0f, 0));
+        Moon.SetColor(glm::vec3(0, 1.0f, 1.0f));
         distLine.SetColor(glm::vec3(0,0,0));
 
-        renderer.Draw(planet);
-        renderer.Draw(otherPlanet);
+        Moon.UpdatePosition(deltaTime);
+        // TODO: Change this draw call thing into a loop where each object is in an array
+
+        renderer.Draw(Moon);
+        renderer.Draw(Earth);
         renderer.Draw(distLine);
 
         display.Update();
