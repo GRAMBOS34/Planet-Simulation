@@ -32,7 +32,7 @@ Object::Object(
 void Object::Accelerate(glm::vec3 acceleration, float deltaTime){
     m_acceleration = acceleration; // mainly for telemetry
 
-    m_velocity += (acceleration * deltaTime);
+    m_velocity = m_velocity + (acceleration * deltaTime);
 }
 
 /**

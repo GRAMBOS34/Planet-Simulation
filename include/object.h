@@ -48,8 +48,8 @@ private:
 
     // Physics values
     // But the calculations will be done somewhere else
-    glm::vec3 m_acceleration = glm::vec3(0, 0, 0);
-    glm::vec3 m_velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 m_acceleration;
+    glm::vec3 m_velocity;
     float m_mass;
 };
 

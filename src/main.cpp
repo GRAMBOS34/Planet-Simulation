@@ -46,11 +46,11 @@ Mesh Line(glm::vec3& startPos, glm::vec3& endPos){
 const float DISPLAY_WIDTH = 1600.0f;
 const float DISPLAY_HEIGHT = 900.0f;
 const float LINE_WIDTH_PIXELS = 2.5f;
-const float TIME_SCALE_MULTIPLIER = 84600;
+const float TIME_SCALE_MULTIPLIER = 1.0e6;
 
 // Physics constants
 const float GRAVITATIONAL_CONSTANT = 6.674e-11;
-const float METERS_PER_PIXEL = 1.0e9f;
+const float KILOMETERS_PER_PIXEL = 1.0e9f;
 
 int main() {
    Display display(DISPLAY_WIDTH, DISPLAY_HEIGHT, "Physics Sim"); // Initialize the display window
@@ -74,7 +74,7 @@ int main() {
    Object Earth(&circle, GL_TRIANGLE_FAN, glm::vec3(0, 0, 0));
 
    Moon.SetMass(7.348e22);
-   Moon.SetVelocity(glm::vec3(1, -1, 0)); // Initial push velocity
+   Moon.SetVelocity(glm::vec3(0, 10, 0)); // Initial push velocity
 
    Earth.SetMass(5.972e24);
 
@@ -96,6 +96,7 @@ int main() {
         float deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
         float simDeltaTime = TIME_SCALE_MULTIPLIER * deltaTime;
+        std::cout << "Sim Delta Time: " << simDeltaTime << "\n";
 
         // * Create a line
         glLineWidth(LINE_WIDTH_PIXELS); // Set line width
@@ -103,18 +104,22 @@ int main() {
         Object distLine(&line, GL_LINES);
 
         // * Physics stuff
-        float dx_meters = (Moon.transform.GetPosition().x - Earth.transform.GetPosition().x) * METERS_PER_PIXEL;
-        float dy_meters = (Moon.transform.GetPosition().y - Earth.transform.GetPosition().y) * METERS_PER_PIXEL;
+        float dx_meters = (Earth.transform.GetPosition().x - Moon.transform.GetPosition().x) * KILOMETERS_PER_PIXEL;
+        float dy_meters = (Earth.transform.GetPosition().y - Moon.transform.GetPosition().y) * KILOMETERS_PER_PIXEL;
 
         float distance = std::hypot(dx_meters, dy_meters);
+        if (distance < 0.05f) distance = 0.05f;
 
-        float accelerationScalar = GRAVITATIONAL_CONSTANT * Earth.GetMass() / pow(distance, 2);
+        // Squaring the distance makes the acceleration pretty much zero for some reason
+        float accelerationScalar = (GRAVITATIONAL_CONSTANT * Earth.GetMass()) / distance;
+        std::cout << "Distance: " << distance << "\n";
 
-        glm::vec3 acc_meters = -accelerationScalar * glm::vec3(dx_meters, dy_meters, 0);
+        glm::vec3 acc_meters = accelerationScalar * glm::vec3(dx_meters / distance, dy_meters / distance, 0);
+        std::cout << "Normal Vector: " << dx_meters / distance << ", " << dy_meters / distance << "\n";
 
-        glm::vec3 acc_pixels = acc_meters / (METERS_PER_PIXEL);
+        glm::vec3 acc_pixels = acc_meters / KILOMETERS_PER_PIXEL;
 
-        Moon.Accelerate(acc_pixels, deltaTime);
+        Moon.Accelerate(acc_pixels, simDeltaTime);
 
         // * Draw stuff
         // Set colors
