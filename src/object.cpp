@@ -1,4 +1,5 @@
 #include "../include/object.h"
+#include <SDL2/SDL_sensor.h>
 
 
 /**
@@ -20,15 +21,24 @@ Object::Object(
     // section of the class
     m_color = glm::vec3(1.0f, 1.0f, 1.0f);
     m_acceleration = glm::vec3(0,0,0);
+    m_velocity = glm::vec3(0,0,0);
 }
 
-void Object::Accelerate(glm::vec3 acceleration){
-    // * new position = old position + (velocity * time between frames)
-    m_velocity += acceleration;
+void Object::Accelerate(glm::vec3 acceleration, float deltaTime){
+    m_velocity += (acceleration * deltaTime);
+    std::cout << "Acceleration: " << acceleration.x << ", " << acceleration.y << "\n"; // ! DEBUG
+    std::cout << "Velocity: " << m_velocity.x << ", " << m_velocity.y << "\n\n"; // ! DEBUG
 }
 
 void Object::UpdatePosition(float deltaTime){
-    transform.GetPosition() += m_velocity / 1000.0f * deltaTime;
+    // * new position = old position + (velocity * time between frames)
+    glm::vec3 oldPosition = transform.GetPosition();
+    glm::vec3 newPosition = oldPosition + (m_velocity * deltaTime);
+
+    transform.SetPosition(newPosition);
+
+    // Old implementation
+    // transform.GetPosition() += (m_velocity * deltaTime);
 }
 
 /**

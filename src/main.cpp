@@ -46,38 +46,43 @@ Mesh Line(glm::vec3& startPos, glm::vec3& endPos){
 const float DISPLAY_WIDTH = 1600.0f;
 const float DISPLAY_HEIGHT = 900.0f;
 const float LINE_WIDTH_PIXELS = 2.5f;
+const float TIME_SCALE_MULTIPLIER = 84600;
 
 // Physics constants
-const float GRAVITATIONAL_CONSTANT = 6.674e-2;
+const float GRAVITATIONAL_CONSTANT = 6.674e-11;
+const float METERS_PER_PIXEL = 1.0e9f;
 
 int main() {
    Display display(DISPLAY_WIDTH, DISPLAY_HEIGHT, "Physics Sim"); // Initialize the display window
 
-   Shader shader("res/basicShader"); // Initialize the vertex and fragment shaders
+   // Initialize the vertex and fragment shaders
+   // ! Make sure that the shaders have the same name
+   // Also idk what it'd do if there's multiple shaders but you'd probably never do that right?
+   Shader shader("res/basicShader");
 
    float aspectRatio = DISPLAY_WIDTH/DISPLAY_HEIGHT;
-   Camera camera(glm::vec3(0.5f, 0, 10.0f), glm::radians(70.0f), aspectRatio, 0.01f, 100.0f); // initialize the camera
+   Camera camera(glm::vec3(0.5f, 0, 300.0f), glm::radians(90.0f), aspectRatio, 0.01f, 500.0f); // initialize the camera
 
    Renderer renderer(&camera, &shader); // initialize the renderer
 
    float lastFrame = 0.0f; // used to calculate deltaTime
 
-   // Array of objects in the scene
+   // Create the objects in the scene
+   Mesh circle = Circle(10.0f, 18);
+   Object Moon(&circle, GL_TRIANGLE_FAN, glm::vec3(384.4f, 0, 0));
+
+   Object Earth(&circle, GL_TRIANGLE_FAN, glm::vec3(0, 0, 0));
+
+   Moon.SetMass(7.348e22);
+   Moon.SetVelocity(glm::vec3(0.05f, 1, 0));
+
+   Earth.SetMass(5.972e24);
+
+   // TODO: Array of objects in the scene
    // This is both to manage it all and to release the memory before ending the process
    // idk if doing this would be redundant since from what i've seen, the destructor
    // is already called when the program is killed but idk, just to be safe ig
    std::vector<Object> SceneObjects;
-
-   // Create the objects in the scene
-   Mesh circle = Circle(0.5f, 18);
-   Object Moon(&circle, GL_TRIANGLE_FAN, glm::vec3(5.0f, 0, 0));
-
-   Object Earth(&circle, GL_TRIANGLE_FAN, glm::vec3(0, 0, 0));
-
-   Moon.SetMass(7.348);
-   Moon.SetVelocity(glm::vec3(0, 1000.0f, 0));
-
-   Earth.SetMass(5.972e2);
 
    while (!display.IsClosed()){
         glClearColor(0.0f, 0.15f, 0.3f, 1.0f); // Sets the background color
@@ -90,33 +95,37 @@ int main() {
         float currentFrame = SDL_GetTicks() / 1000.0f;
         float deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+        float simDeltaTime = TIME_SCALE_MULTIPLIER * deltaTime;
 
-        // * Initialize a line
+        // * Create a line
         glLineWidth(LINE_WIDTH_PIXELS); // Set line width
         Mesh line = Line(Moon.transform.GetPosition(), Earth.transform.GetPosition());
         Object distLine(&line, GL_LINES);
 
         // * Physics stuff
-        float dx = Earth.transform.GetPosition().x - Moon.transform.GetPosition().x;
-        float dy = Earth.transform.GetPosition().y - Moon.transform.GetPosition().y;
+        float dx_meters = (Moon.transform.GetPosition().x - Earth.transform.GetPosition().x) * METERS_PER_PIXEL;
+        float dy_meters = (Moon.transform.GetPosition().y - Earth.transform.GetPosition().y) * METERS_PER_PIXEL;
 
-        float distance = std::hypot(dx, dy);
+        float distance = std::hypot(dx_meters, dy_meters);
 
         float accelerationScalar = GRAVITATIONAL_CONSTANT * Earth.GetMass() / pow(distance, 2);
 
-        glm::vec3 acceleration = accelerationScalar * glm::vec3(dx, dy, 0);
+        glm::vec3 acc_meters = accelerationScalar * glm::vec3(dx_meters, dy_meters, 0);
 
-        Moon.Accelerate(acceleration);
-        std::cout << accelerationScalar << "\n";
+        glm::vec3 acc_pixels = acc_meters / (METERS_PER_PIXEL);
 
-        // * Draw the planet
+        Moon.Accelerate(acc_pixels, deltaTime);
+
+        // * Draw stuff
+        // Set colors
         Earth.SetColor(glm::vec3(1.0f, 1.0f, 0));
         Moon.SetColor(glm::vec3(0, 1.0f, 1.0f));
         distLine.SetColor(glm::vec3(0,0,0));
 
-        Moon.UpdatePosition(deltaTime);
-        // TODO: Change this draw call thing into a loop where each object is in an array
+        Moon.UpdatePosition(deltaTime); // Update positions
+        std::cout << "Position: " << Moon.transform.GetPosition().x << ", " << Moon.transform.GetPosition().y << "\n"; // ! DEBUG
 
+        // TODO: Change this draw call thing into a loop where each object is in an array
         renderer.Draw(Moon);
         renderer.Draw(Earth);
         renderer.Draw(distLine);

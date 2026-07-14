@@ -21,7 +21,7 @@ public:
 
     void UpdatePosition(float deltaTime);
 
-    void Accelerate(glm::vec3 acceleration);
+    void Accelerate(glm::vec3 acceleration, float deltaTime);
     void Scale(glm::vec3 newScale);
 
     // Creates a default destructor
@@ -49,7 +49,7 @@ private:
     // Physics values
     // But the calculations will be done somewhere else
     glm::vec3 m_acceleration = glm::vec3(0, 0, 0);
-    glm::vec3 m_velocity = glm::vec3(0, 0, 0);
+    glm::vec3 m_velocity = glm::vec3(0.0f, 0.0f, 0.0f);
     float m_mass;
 };
 

@@ -12,6 +12,7 @@ This project is mainly for me to learn OpenGL, graphics programming, and physics
 - Have a way to delete objects outside a certain area during runtime
 - Implement quaternions for rotation instead of Euler angles
 - Introduce 3D
+- Add a time scale manipulation thing
 
 ## Gravity To-do list
 - Calculate the distance between different objects/planets ✅
