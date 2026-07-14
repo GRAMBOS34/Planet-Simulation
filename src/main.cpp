@@ -2,7 +2,6 @@
 #include <string>
 #include <vector>
 #include <cmath>
-#include <iostream>
 
 #include <GL/glew.h>
 #include <SDL2/SDL_timer.h>
@@ -15,6 +14,7 @@
 #include "../include/camera.h"
 #include "../include/object.h"
 #include "../include/renderer.h"
+#include "../include/telemetry.h"
 
 // * This function only creates a 2D circle
 // The sphere will be a bit more complicated although somewhat the same
@@ -74,7 +74,7 @@ int main() {
    Object Earth(&circle, GL_TRIANGLE_FAN, glm::vec3(0, 0, 0));
 
    Moon.SetMass(7.348e22);
-   Moon.SetVelocity(glm::vec3(0.05f, 1, 0));
+   Moon.SetVelocity(glm::vec3(1, -1, 0)); // Initial push velocity
 
    Earth.SetMass(5.972e24);
 
@@ -110,7 +110,7 @@ int main() {
 
         float accelerationScalar = GRAVITATIONAL_CONSTANT * Earth.GetMass() / pow(distance, 2);
 
-        glm::vec3 acc_meters = accelerationScalar * glm::vec3(dx_meters, dy_meters, 0);
+        glm::vec3 acc_meters = -accelerationScalar * glm::vec3(dx_meters, dy_meters, 0);
 
         glm::vec3 acc_pixels = acc_meters / (METERS_PER_PIXEL);
 
@@ -123,6 +123,7 @@ int main() {
         distLine.SetColor(glm::vec3(0,0,0));
 
         Moon.UpdatePosition(deltaTime); // Update positions
+        Logs::ShowPlanetTelemetry(Moon);
 
         // TODO: Change this draw call thing into a loop where each object is in an array
         renderer.Draw(Moon);

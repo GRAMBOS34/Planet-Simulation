@@ -25,17 +25,19 @@ Object::Object(
 
 /**
  * @brief Integrates acceleration to get velocity
- * 
+ *
  * @param acceleration - acceleration vector
  * @param deltaTime - time between frames
  */
 void Object::Accelerate(glm::vec3 acceleration, float deltaTime){
+    m_acceleration = acceleration; // mainly for telemetry
+
     m_velocity += (acceleration * deltaTime);
 }
 
 /**
  * @brief Integrates velocity to get position
- * 
+ *
  * @param deltaTime - time between frames
  */
 void Object::UpdatePosition(float deltaTime){
