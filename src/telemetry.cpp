@@ -1,6 +1,6 @@
 #include "../include/telemetry.h"
 
-void Logs::ShowPlanetTelemetry(Object& planet){
+void Logs::ShowPlanetTelemetryInPX(Object& planet){
     // Position, Velocity, Acceleration
     glm::vec3 position = planet.transform.GetPosition();
     glm::vec3 velocity = planet.GetVelocity();

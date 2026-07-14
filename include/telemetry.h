@@ -4,7 +4,7 @@
 #include "object.h"
 
 namespace Logs{
-    void ShowPlanetTelemetry(Object& planet);
+    void ShowPlanetTelemetryInPX(Object& planet);
 }
 
 #endif

@@ -128,7 +128,7 @@ int main() {
         distLine.SetColor(glm::vec3(0,0,0));
 
         Moon.UpdatePosition(deltaTime); // Update positions
-        Logs::ShowPlanetTelemetry(Moon);
+        Logs::ShowPlanetTelemetryInPX(Moon);
 
         // TODO: Change this draw call thing into a loop where each object is in an array
         renderer.Draw(Moon);
