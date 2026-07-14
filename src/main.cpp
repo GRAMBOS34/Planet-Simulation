@@ -123,7 +123,6 @@ int main() {
         distLine.SetColor(glm::vec3(0,0,0));
 
         Moon.UpdatePosition(deltaTime); // Update positions
-        std::cout << "Position: " << Moon.transform.GetPosition().x << ", " << Moon.transform.GetPosition().y << "\n"; // ! DEBUG
 
         // TODO: Change this draw call thing into a loop where each object is in an array
         renderer.Draw(Moon);

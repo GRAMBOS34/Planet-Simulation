@@ -1,7 +1,6 @@
 #include "../include/object.h"
 #include <SDL2/SDL_sensor.h>
 
-
 /**
  * @brief Construct a new Object::Object object
  *
@@ -24,21 +23,27 @@ Object::Object(
     m_velocity = glm::vec3(0,0,0);
 }
 
+/**
+ * @brief Integrates acceleration to get velocity
+ * 
+ * @param acceleration - acceleration vector
+ * @param deltaTime - time between frames
+ */
 void Object::Accelerate(glm::vec3 acceleration, float deltaTime){
     m_velocity += (acceleration * deltaTime);
-    std::cout << "Acceleration: " << acceleration.x << ", " << acceleration.y << "\n"; // ! DEBUG
-    std::cout << "Velocity: " << m_velocity.x << ", " << m_velocity.y << "\n\n"; // ! DEBUG
 }
 
+/**
+ * @brief Integrates velocity to get position
+ * 
+ * @param deltaTime - time between frames
+ */
 void Object::UpdatePosition(float deltaTime){
     // * new position = old position + (velocity * time between frames)
     glm::vec3 oldPosition = transform.GetPosition();
     glm::vec3 newPosition = oldPosition + (m_velocity * deltaTime);
 
     transform.SetPosition(newPosition);
-
-    // Old implementation
-    // transform.GetPosition() += (m_velocity * deltaTime);
 }
 
 /**
