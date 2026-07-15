@@ -1,6 +1,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include <SDL2/SDL_events.h>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
@@ -17,18 +18,26 @@ public:
         float zFar
     );
 
+    void UpdateCameraPosition();
+    void RotateCamera(float deltaPitch, float deltaYaw);
+
     inline glm::mat4 GetViewProjection() const {
-        glm::mat4 viewMatrix = glm::lookAt(cameraPosition, cameraPosition + rotationForward, rotationUp);
-        return perspective * viewMatrix;
+        glm::mat4 viewMatrix = glm::lookAt(m_cameraPosition, m_cameraPosition + m_rotationForward, m_rotationUp);
+        return m_perspective * viewMatrix;
     }
 
+    inline void setCameraPosition(glm::vec3 newCamPosition) { m_cameraPosition = newCamPosition; }
+
 private:
-    glm::mat4 perspective;
-    glm::vec3 cameraPosition;
+    glm::mat4 m_perspective;
+    glm::vec3 m_cameraPosition;
 
     // Rotation stuff
-    glm::vec3 rotationForward;
-    glm::vec3 rotationUp;
+    glm::vec3 m_rotationForward;
+    glm::vec3 m_rotationUp;
+
+    float m_pitch;
+    float m_yaw;
 };
 
 #endif
