@@ -5,6 +5,7 @@
 
 namespace Logs{
     void ShowPlanetTelemetryInPX(Object& planet);
+    void ShowPlanetTelemetryInMeters(Object& planet, float distanceScalingFactor);
 }
 
 #endif

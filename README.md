@@ -22,14 +22,25 @@ This project is mainly for me to learn OpenGL, graphics programming, and physics
 - Influence the path of the objects using a force vector ✅
 - Influence the path of the objects using gravity ✅
 - Use the real values for mass in the simulation (Meaning I have to scale the grid somehow) ✅
+- Implement Verlet integration but understand how Euler integration works first
 - Add a time scale manipulation thing
 - Simulate the orbit of the Moon around the Earth to prove it works (with some leniency, the values just have to be accurate and fit on the screen for the most part)
 
 ## Keeping things pretty
+
 - Create a utils directory and put the debug stuff there (?) ✅
-- Have that utils directory also show the units in km/s rather than px/s 
+- Have that utils directory also show the units in km/s rather than px/s
+- Create a function in the telemetery files that lets us pick how to clear the terminal (but really we want to display this stuff to the screen)
 - Add better documentation or even make a separate file for documentation
 
 ## Time Scale Requirements
+
 - Make stuff move faster
 - However, make sure it doesn't affect calculations in weird ways
+
+## Tracking Telemetry Requirements
+- Position
+- Velocity
+- Acceleration
+- Distance from the nearest planet
+- Vector of gravity force (render an arrow in the scene later)
