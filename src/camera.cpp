@@ -5,10 +5,13 @@
 #include <SDL2/SDL_scancode.h>
 
 #include <SDL2/SDL_stdinc.h>
+#include <glm/geometric.hpp>
 #include <iostream>
 
 const float MOVEMENT_SPEED_PX = 1.5f;
-const float ROTATION_SPEED_SENS = 0.5f;
+const float ROTATION_SPEED_SENS = 1.0f;
+
+bool isRelativeMode = false;
 
 /**
  * @brief Construct a new Camera:: Camera object
@@ -36,10 +39,13 @@ void Camera::RotateCamera(float deltaPitch, float deltaYaw){
     if (m_pitch > 1.55f)  m_pitch = 1.55f;
     if (m_pitch < -1.55f) m_pitch = -1.55f;
 
+    std::cout << m_pitch << ", " << m_yaw << "\n";
+    
+    // Point the forward vector somewhere else
     glm::vec3 newForward;
-    newForward.x = m_rotationForward.x;
+    newForward.x = cos(m_pitch) * cos(m_yaw);
     newForward.y = sin(m_pitch);
-    newForward.z = m_rotationForward.z;
+    newForward.z = cos(m_pitch) * sin(m_yaw);
 
     m_rotationForward = glm::normalize(newForward);
 
@@ -48,9 +54,17 @@ void Camera::RotateCamera(float deltaPitch, float deltaYaw){
     glm::vec3 localRight = glm::normalize(glm::cross(m_rotationForward, globalUp));
 
     m_rotationUp = glm::normalize(glm::cross(localRight, m_rotationForward));
+
+    // std::cout << newForward.x << ", " << newForward.y << ", " << newForward.z << "\n";
+
+    // float forwardLen = glm::length(m_rotationForward);
+    // float upLen = glm::length(m_rotationUp);
+    // float angle = glm::dot(m_rotationForward, m_rotationUp) / (forwardLen * upLen);
+
+    // std::cout << acos(angle) << "\n";
 }
 
-void Camera::UpdateCameraPosition(){
+void Camera::UpdateCameraPosition(SDL_Event& event){
     /*
      * Continuously poll the keyboard to update the camera
      * position to create movement
@@ -58,6 +72,7 @@ void Camera::UpdateCameraPosition(){
     const Uint8* keystate = SDL_GetKeyboardState(NULL);
 
     // * Camera Positioning
+    // ! Fix this so that it uses vectors in local space
     // Z-axis movement
     if(keystate[SDL_SCANCODE_W]){
         m_cameraPosition.z -= MOVEMENT_SPEED_PX;
@@ -82,40 +97,31 @@ void Camera::UpdateCameraPosition(){
         m_cameraPosition.y += MOVEMENT_SPEED_PX;
     }
 
-    float cameraPitch = 0.0f;
-
-    // ! Camera rotation test
-    if(keystate[SDL_SCANCODE_I]){
-        cameraPitch += 0.1f;
-        if(cameraPitch < 1.55f){
-            m_cameraPosition.x = cameraPitch;
-        }
-    }
-
     // * Camera Rotation
 
+    // Get's the mouse state and its position
+    // There's probably a way to do this without having to get
+    // the mouse coordinates however, idk what I'm doing and
+    // I'm just going to try and justify it by saying that 
+    // I could use it for a drag-and-drop feature thing idk
     int mouseX, mouseY;
     Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
-
+    
     if (mouseState & SDL_BUTTON(SDL_BUTTON_MIDDLE)) {
-        // Left mouse button is currently being held down
-        // (e.g., continuously spraying a weapon or dragging an item)
-
-        // TODO: Make sure that when MMB is held down
-        // the mouse can move to rotate the camera
-        SDL_SetRelativeMouseMode(SDL_TRUE);
-
         int xRel = 0;
         int yRel = 0;
         SDL_GetRelativeMouseState(&xRel, &yRel);
 
-        float pitch = xRel * ROTATION_SPEED_SENS;
-        float yaw = yRel * ROTATION_SPEED_SENS;
+        if (isRelativeMode == true){
+            RotateCamera(-yRel, xRel); 
+        }
 
-        RotateCamera(pitch, yaw);
+        isRelativeMode = true;
 
-        // std::cout << xRel << ", " << yRel << "\n";
-        std::cout << m_rotationForward.x << ", " << m_rotationForward.y << ", " << m_rotationForward.z << "\n";
+        std::cout << xRel << ", " << yRel << "\n";
     }
-    else SDL_SetRelativeMouseMode(SDL_FALSE);
+    else{
+        SDL_SetRelativeMouseMode(SDL_FALSE);
+        isRelativeMode = false;
+    }
 }

@@ -18,7 +18,7 @@ public:
         float zFar
     );
 
-    void UpdateCameraPosition();
+    void UpdateCameraPosition(SDL_Event& event);
     void RotateCamera(float deltaPitch, float deltaYaw);
 
     inline glm::mat4 GetViewProjection() const {

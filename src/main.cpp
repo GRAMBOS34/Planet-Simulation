@@ -55,7 +55,11 @@ const float GRAVITATIONAL_CONSTANT = 6.674e-11;
 const float METERS_PER_PIXEL = 1.0e6f;
 
 int main() {
+    SDL_Event event;
+
     Display display(DISPLAY_WIDTH, DISPLAY_HEIGHT, "Physics Sim"); // Initialize the display window
+
+    glEnable(GL_DEPTH_TEST); // Ensure we enable the depth thing so that we dont draw primitives over each other
 
     // Initialize the vertex and fragment shaders
     // ! Make sure that the shaders have the same name
@@ -101,7 +105,7 @@ int main() {
         float simDeltaTime = TIME_SCALE_MULTIPLIER * deltaTime;
 
         // * Camera Input
-        camera.UpdateCameraPosition();
+        camera.UpdateCameraPosition(event);
 
         // * Create a line
         glLineWidth(LINE_WIDTH_PIXELS); // Set line width
@@ -140,7 +144,6 @@ int main() {
         renderer.Draw(distLine);
 
         display.Update();
-}
-
+    }
    return 0;
 }
