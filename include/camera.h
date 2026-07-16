@@ -22,7 +22,7 @@ public:
     void RotateCamera(float deltaPitch, float deltaYaw);
 
     inline glm::mat4 GetViewProjection() const {
-        glm::mat4 viewMatrix = glm::lookAt(m_cameraPosition, m_cameraPosition + m_rotationForward, m_rotationUp);
+        glm::mat4 viewMatrix = glm::lookAt(m_cameraPosition, m_cameraPosition + m_localForward, m_localUp);
         return m_perspective * viewMatrix;
     }
 
@@ -33,8 +33,9 @@ private:
     glm::vec3 m_cameraPosition;
 
     // Rotation stuff
-    glm::vec3 m_rotationForward;
-    glm::vec3 m_rotationUp;
+    glm::vec3 m_localForward;
+    glm::vec3 m_localUp;
+    glm::vec3 m_localRight;
 
     float m_pitch;
     float m_yaw;
