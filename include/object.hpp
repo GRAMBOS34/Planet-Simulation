@@ -1,12 +1,9 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include <vector>
-#include <iostream>
-
-#include "transform.h"
-#include "mesh.h"
-#include "shader.h"
+#include "transform.hpp"
+#include "mesh.hpp"
+#include "shader.hpp"
 
 class Object {
 public:

@@ -4,8 +4,8 @@
 #include <string>
 #include <GL/glew.h>
 
-#include "transform.h"
-#include "camera.h"
+#include "transform.hpp"
+#include "camera.hpp"
 
 class Shader {
 public:

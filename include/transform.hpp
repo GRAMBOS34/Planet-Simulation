@@ -15,7 +15,7 @@ public:
 
     /**
      * @brief Get the Model matrix
-     * 
+     *
      * @return glm::mat4 - The model matrix - a product of the scale, rotation, and position matrices
      */
     inline glm::mat4 GetModel() const {

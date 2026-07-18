@@ -1,5 +1,6 @@
-#include "../../include/telemetry.h"
+#include "../include/telemetry.hpp"
 
+#include <iostream>
 #include <cstdlib> // #linuxsupremacy
 
 void Logs::ShowPlanetTelemetryInPX(Object& planet){

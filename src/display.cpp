@@ -1,7 +1,7 @@
 #include <GL/glew.h>
 #include <iostream>
 
-#include "../../include/display.h"
+#include "../include/display.hpp"
 
 /**
  * @brief Construct a new Display:: Display object

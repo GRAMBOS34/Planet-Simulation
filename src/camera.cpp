@@ -1,4 +1,4 @@
-#include "../../include/camera.h"
+#include "../include/camera.hpp"
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_keyboard.h>
 #include <SDL2/SDL_mouse.h>

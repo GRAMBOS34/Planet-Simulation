@@ -10,13 +10,13 @@
 #include <glm/common.hpp>
 #include <glm/trigonometric.hpp>
 
-#include "../include/display.h"
-#include "../include/shader.h"
-#include "../include/mesh.h"
-#include "../include/camera.h"
-#include "../include/object.h"
-#include "../include/renderer.h"
-#include "../include/telemetry.h"
+#include "../include/display.hpp"
+#include "../include/shader.hpp"
+#include "../include/mesh.hpp"
+#include "../include/camera.hpp"
+#include "../include/object.hpp"
+#include "../include/renderer.hpp"
+#include "../include/telemetry.hpp"
 
 // * This function only creates a 2D circle
 // The sphere will be a bit more complicated although somewhat the same
@@ -154,7 +154,7 @@ int main() {
         distLine.SetColor(glm::vec3(0,0,0));
 
         Moon.UpdatePosition(deltaTime); // Update positions
-        // Logs::ShowPlanetTelemetryInMeters(Moon, METERS_PER_PIXEL);
+        Logs::ShowPlanetTelemetryInMeters(Moon, METERS_PER_PIXEL);
 
         // TODO: Change this draw call thing into a loop where each object is in an array
         renderer.Draw(Moon);

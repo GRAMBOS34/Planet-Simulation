@@ -1,9 +1,9 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include "camera.h"
-#include "shader.h"
-#include "object.h"
+#include "camera.hpp"
+#include "shader.hpp"
+#include "object.hpp"
 
 class Renderer {
 public:
