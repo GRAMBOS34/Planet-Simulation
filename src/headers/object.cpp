@@ -1,4 +1,4 @@
-#include "../include/object.h"
+#include "../../include/object.h"
 #include <SDL2/SDL_sensor.h>
 
 /**

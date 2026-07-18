@@ -1,4 +1,4 @@
-#include "../include/mesh.h"
+#include "../../include/mesh.h"
 
 /**
  * @brief Construct a new Mesh:: Mesh object

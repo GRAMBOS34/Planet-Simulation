@@ -1,4 +1,4 @@
-#include "../include/renderer.h"
+#include "../../include/renderer.h"
 
 
 // This renderer class exists because the camera and shader are things

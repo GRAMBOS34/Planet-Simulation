@@ -1,4 +1,4 @@
-#include "../include/shader.h"
+#include "../../include/shader.h"
 #include <iostream>
 #include <fstream>
 
@@ -15,8 +15,8 @@ static GLuint CreateShader(const std::string& text, GLenum shaderType);
 
 /**
  * @brief Construct a new Shader:: Shader object
- * 
- * @param filename 
+ *
+ * @param filename
  */
 Shader::Shader(const std::string& filename){
     // Load shaders
@@ -60,7 +60,7 @@ void Shader::Bind(){
 
 /**
  * @brief Update the shader
- * 
+ *
  * @param transform - The transform matrix
  * @param camera - Camera object
  */
@@ -72,10 +72,10 @@ void Shader::Update(const Transform& transform, const Camera& camera){
 
 /**
  * @brief Compile the shader
- * 
+ *
  * @param text - Shader in a string format
- * @param shaderType 
- * @return GLuint 
+ * @param shaderType
+ * @return GLuint
  */
 static GLuint CreateShader(const std::string& text, GLenum shaderType){
     GLuint shader = glCreateShader(shaderType);
@@ -100,9 +100,9 @@ static GLuint CreateShader(const std::string& text, GLenum shaderType){
 
 /**
  * @brief Open the raw text file of the shader and convert to string
- * 
+ *
  * @param filename - Filename of the raw text file of the shader
- * @return std::string - The shader in a raw string 
+ * @return std::string - The shader in a raw string
  */
 static std::string LoadShader(const std::string& filename){
     // Load the file
