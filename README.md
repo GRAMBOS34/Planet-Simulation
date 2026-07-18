@@ -39,8 +39,8 @@ This project is mainly for me to learn OpenGL, graphics programming, and physics
 - However, make sure it doesn't affect calculations in weird ways
 
 ## Tracking Telemetry Requirements
-- Position
-- Velocity
-- Acceleration
+- Position ✅
+- Velocity ✅
+- Acceleration ✅
 - Distance from the nearest planet
 - Vector of gravity force (render an arrow in the scene later)

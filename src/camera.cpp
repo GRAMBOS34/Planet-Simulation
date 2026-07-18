@@ -102,8 +102,11 @@ void Camera::UpdateCameraPosition(SDL_Event& event){
     if (mouseState & SDL_BUTTON(SDL_BUTTON_MIDDLE)) {
         int yaw = 0;
         int pitch = 0;
-        SDL_GetRelativeMouseState(&yaw, &pitch);
+        SDL_GetRelativeMouseState(&yaw, &pitch); // Get relative position instead of absolute position
+        SDL_ShowCursor(SDL_DISABLE); // Hide cursor
 
+        // This is here mainly to avoid the camera suddenly turning when
+        // the middle mouse button is clicked
         if (isRelativeMode == true){
             // Pitch is negative because I prefer moving down to go down
             // Although I can probably make this togglable at some point
@@ -114,6 +117,7 @@ void Camera::UpdateCameraPosition(SDL_Event& event){
     }
     else{
         SDL_SetRelativeMouseMode(SDL_FALSE);
+        SDL_ShowCursor(SDL_ENABLE);
         isRelativeMode = false;
     }
 }

@@ -37,6 +37,20 @@ Mesh Circle(float radius, int edges){
     return Mesh(verticies.data(), verticies.size());
 }
 
+Mesh Square(float sideLength){
+    std::vector<Vertex> vertices;
+
+    vertices = {
+        // Bottom left triangle
+        Vertex(glm::vec3(0, 0, 0)), Vertex(glm::vec3(sideLength, 0, 0)), Vertex(glm::vec3(0, sideLength, 0)),
+
+        // top right triangle
+        Vertex(glm::vec3(0, sideLength, 0)), Vertex(glm::vec3(sideLength, sideLength, 0)), Vertex(glm::vec3(sideLength, 0, 0))
+    };
+
+    return Mesh(vertices.data(), vertices.size());
+}
+
 Mesh Line(glm::vec3& startPos, glm::vec3& endPos){
     std::vector<Vertex> vertices = {
         Vertex(startPos), Vertex(endPos)
@@ -79,6 +93,9 @@ int main() {
     Object Moon(&circle, GL_TRIANGLE_FAN, glm::vec3(moonDistMeters/METERS_PER_PIXEL, 0, 0));
 
     Object Earth(&circle, GL_TRIANGLE_FAN, glm::vec3(0, 0, 0));
+
+    Mesh square = Square(20.0f);
+    Object Cube(&square, GL_TRIANGLES, glm::vec3(0, 0, 20.0f));
 
     Moon.SetMass(7.348e22); // in kg
     Moon.SetVelocity(glm::vec3(0, 1.0f, 0)); // Initial push velocity
@@ -133,6 +150,7 @@ int main() {
         // Set colors
         Earth.SetColor(glm::vec3(1.0f, 1.0f, 0));
         Moon.SetColor(glm::vec3(0, 1.0f, 1.0f));
+        Cube.SetColor(glm::vec3(0, 0, 0));
         distLine.SetColor(glm::vec3(0,0,0));
 
         Moon.UpdatePosition(deltaTime); // Update positions
@@ -141,6 +159,7 @@ int main() {
         // TODO: Change this draw call thing into a loop where each object is in an array
         renderer.Draw(Moon);
         renderer.Draw(Earth);
+        renderer.Draw(Cube);
         renderer.Draw(distLine);
 
         display.Update();
