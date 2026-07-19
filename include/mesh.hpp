@@ -22,6 +22,10 @@ public:
     void Draw(GLenum glShapeType) const;
 
     virtual ~Mesh();
+
+    // Getters
+    inline GLuint GetVBO() { return m_vertexArrayObject; }
+
 private:
     Mesh(const Mesh& other) = delete;
     void operator=(const Mesh& other) = delete;
