@@ -18,47 +18,6 @@
 #include "../include/renderer.hpp"
 #include "../include/telemetry.hpp"
 
-// * This function only creates a 2D circle
-// The sphere will be a bit more complicated although somewhat the same
-Mesh Circle(float radius, int edges){
-    std::vector<Vertex> verticies;
-    verticies.reserve(edges + 2);
-
-    verticies.emplace_back(glm::vec3(0,0,0)); // Add the centre point
-
-    for (int i = 0; i <= edges; i++){
-        float angle = 2.0f * 3.14159f * i / edges; // Calculate angle in radians
-        float x_point = (radius * cos(angle));
-        float y_point = (radius * sin(angle));
-
-        verticies.emplace_back(glm::vec3(x_point, y_point, 0)); // (x,y,z)
-    }
-
-    return Mesh(verticies.data(), verticies.size());
-}
-
-Mesh Square(float sideLength){
-    std::vector<Vertex> vertices;
-
-    vertices = {
-        // Bottom left triangle
-        Vertex(glm::vec3(0, 0, 0)), Vertex(glm::vec3(sideLength, 0, 0)), Vertex(glm::vec3(0, sideLength, 0)),
-
-        // top right triangle
-        Vertex(glm::vec3(0, sideLength, 0)), Vertex(glm::vec3(sideLength, sideLength, 0)), Vertex(glm::vec3(sideLength, 0, 0))
-    };
-
-    return Mesh(vertices.data(), vertices.size());
-}
-
-Mesh Line(glm::vec3& startPos, glm::vec3& endPos){
-    std::vector<Vertex> vertices = {
-        Vertex(startPos), Vertex(endPos)
-    };
-
-    return Mesh(vertices.data(), vertices.size());
-}
-
 const float DISPLAY_WIDTH = 1600.0f;
 const float DISPLAY_HEIGHT = 900.0f;
 const float LINE_WIDTH_PIXELS = 2.5f;
@@ -88,13 +47,12 @@ int main() {
     float lastFrame = 0.0f; // used to calculate deltaTime
 
     // Create the objects in the scene
-    Mesh circle = Circle(10.0f, 18);
+    Mesh circle = PrimitiveShapes::Circle(20.0f);
     float moonDistMeters = 384.4e6f;
     Object Moon(&circle, GL_TRIANGLE_FAN, glm::vec3(moonDistMeters/METERS_PER_PIXEL, 0, 0));
-
     Object Earth(&circle, GL_TRIANGLE_FAN, glm::vec3(0, 0, 0));
 
-    Mesh square = Square(20.0f);
+    Mesh square = PrimitiveShapes::Quad(20.0f, 20.0f);
     Object Cube(&square, GL_TRIANGLES, glm::vec3(0, 0, 20.0f));
 
     Moon.SetMass(7.348e22); // in kg
@@ -126,8 +84,9 @@ int main() {
 
         // * Create a line
         glLineWidth(LINE_WIDTH_PIXELS); // Set line width
-        Mesh line = Line(Moon.transform.GetPosition(), Earth.transform.GetPosition());
+        Mesh line = PrimitiveShapes::Line(Moon.transform.GetPosition(), Earth.transform.GetPosition());
         Object distLine(&line, GL_LINES);
+        distLine.SetColor(glm::vec3(0,0,0));
 
         // * Physics stuff
         float dx_meters = (Earth.transform.GetPosition().x - Moon.transform.GetPosition().x) * METERS_PER_PIXEL;
@@ -151,14 +110,12 @@ int main() {
         Earth.SetColor(glm::vec3(1.0f, 1.0f, 0));
         Moon.SetColor(glm::vec3(0, 1.0f, 1.0f));
         Cube.SetColor(glm::vec3(0, 0, 0));
-        distLine.SetColor(glm::vec3(0,0,0));
 
         Moon.UpdatePosition(deltaTime); // Update positions
         Logs::ShowPlanetTelemetryInMeters(Moon, METERS_PER_PIXEL);
 
-        // TODO: Change this draw call thing into a loop where each object is in an array
-        renderer.Draw(Moon);
         renderer.Draw(Earth);
+        renderer.Draw(Moon);
         renderer.Draw(Cube);
         renderer.Draw(distLine);
 

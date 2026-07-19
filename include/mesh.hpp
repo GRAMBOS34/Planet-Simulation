@@ -37,4 +37,10 @@ private:
 
 };
 
+namespace PrimitiveShapes {
+    Mesh Circle (float radius, int sides = 20);
+    Mesh Quad(float x, float y);
+    Mesh Line(glm::vec3& startPos, glm::vec3& endPos);
+};
+
 #endif

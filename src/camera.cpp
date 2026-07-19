@@ -29,6 +29,8 @@ Camera::Camera(const glm::vec3 &pos, float fov, float aspect, float zNear, float
 
     m_localForward = glm::vec3(0, 0, -1);
     m_localUp = glm::vec3(0, 1, 0);
+
+    m_localRight = glm::normalize(glm::cross(m_localForward, globalUp));
 }
 
 void Camera::RotateCamera(float deltaPitch, float deltaYaw){
@@ -57,11 +59,11 @@ void Camera::RotateCamera(float deltaPitch, float deltaYaw){
     m_localUp = glm::normalize(glm::cross(m_localRight, m_localForward));
 }
 
+/*
+ * Continuously poll the keyboard to update the camera
+ * position to create movement
+ */
 void Camera::UpdateCameraPosition(SDL_Event& event){
-    /*
-     * Continuously poll the keyboard to update the camera
-     * position to create movement
-     */
     const Uint8* keystate = SDL_GetKeyboardState(NULL);
 
     // * Camera Positioning
@@ -81,7 +83,7 @@ void Camera::UpdateCameraPosition(SDL_Event& event){
         m_cameraPosition -= m_localRight * MOVEMENT_SPEED_PX;
     }
 
-    // Y-axis movement
+    // Y-axis movementc
     if(keystate[SDL_SCANCODE_LCTRL]){
         m_cameraPosition -= m_localUp * MOVEMENT_SPEED_PX;
     }
@@ -90,12 +92,8 @@ void Camera::UpdateCameraPosition(SDL_Event& event){
     }
 
     // * Camera Rotation
-
     // Get's the mouse state and its position
-    // There's probably a way to do this without having to get
-    // the mouse coordinates however, idk what I'm doing and
-    // I'm just going to try and justify it by saying that
-    // I could use it for a drag-and-drop feature thing idk
+    // There's probably a way to do this without having to get the mouse coordinates
     int mouseX, mouseY;
     Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
 

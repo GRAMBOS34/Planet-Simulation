@@ -42,3 +42,45 @@ void Mesh::Draw(GLenum glShapeType) const {
 
     glBindVertexArray(0);
 }
+
+// ! ---------------- PRIMITIVE SHAPES -------------------------
+
+// * This function only creates a 2D circle
+Mesh PrimitiveShapes::Circle(float radius, int edges){
+    std::vector<Vertex> verticies;
+    verticies.reserve(edges + 2);
+
+    verticies.emplace_back(glm::vec3(0,0,0)); // Add the centre point
+
+    for (int i = 0; i <= edges; i++){
+        float angle = 2.0f * 3.14159f * i / edges; // Calculate angle in radians
+        float x_point = (radius * cos(angle));
+        float y_point = (radius * sin(angle));
+
+        verticies.emplace_back(glm::vec3(x_point, y_point, 0)); // (x,y,z)
+    }
+
+    return Mesh(verticies.data(), verticies.size());
+}
+
+Mesh PrimitiveShapes::Quad(float x, float y){
+    std::vector<Vertex> vertices;
+
+    vertices = {
+        // Bottom left triangle
+        Vertex(glm::vec3(0, 0, 0)), Vertex(glm::vec3(x, 0, 0)), Vertex(glm::vec3(0, y, 0)),
+
+        // top right triangle
+        Vertex(glm::vec3(0, y, 0)), Vertex(glm::vec3(x, y, 0)), Vertex(glm::vec3(x, 0, 0))
+    };
+
+    return Mesh(vertices.data(), vertices.size());
+}
+
+Mesh PrimitiveShapes::Line(glm::vec3& startPos, glm::vec3& endPos){
+    std::vector<Vertex> vertices = {
+        Vertex(startPos), Vertex(endPos)
+    };
+
+    return Mesh(vertices.data(), vertices.size());
+}
