@@ -32,6 +32,7 @@ This project is mainly for me to learn OpenGL, graphics programming, and physics
 - Have that utils directory also show the units in km/s rather than px/s
 - Create a function in the telemetery files that lets us pick how to clear the terminal (but really we want to display this stuff to the screen)
 - Add better documentation or even make a separate file for documentation
+- Store Objects in a vector mainly to clean up the render loop ✅ 
 
 ## Time Scale Requirements
 

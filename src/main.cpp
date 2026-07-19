@@ -50,21 +50,33 @@ int main() {
     Mesh circle = PrimitiveShapes::Circle(20.0f);
     float moonDistMeters = 384.4e6f;
     Object Moon(&circle, GL_TRIANGLE_FAN, glm::vec3(moonDistMeters/METERS_PER_PIXEL, 0, 0));
+    Moon.SetColor(glm::vec3(0, 1.0f, 1.0f));
+
     Object Earth(&circle, GL_TRIANGLE_FAN, glm::vec3(0, 0, 0));
+    Earth.SetColor(glm::vec3(1.0f, 1.0f, 0));
 
     Mesh square = PrimitiveShapes::Quad(20.0f, 20.0f);
     Object Cube(&square, GL_TRIANGLES, glm::vec3(0, 0, 20.0f));
+    Cube.SetColor(glm::vec3(0, 0, 0));
 
     Moon.SetMass(7.348e22); // in kg
     Moon.SetVelocity(glm::vec3(0, 1.0f, 0)); // Initial push velocity
 
     Earth.SetMass(5.972e24); // in kg
 
-    // TODO: Array of objects in the scene
-    // This is both to manage it all and to release the memory before ending the process
-    // idk if doing this would be redundant since from what i've seen, the destructor
-    // is already called when the program is killed but idk, just to be safe ig
-    std::vector<Object> SceneObjects;
+    // * Scene object vector
+    /*
+     * A vector of pointers that show point to the object's address
+     * This is done so that we can read the values even after they're updated.
+     * I don't think smart pointers would be good here since this vector
+     * is only needed to read data. so if I had to delete smth during runtime, I'd just
+     * create a delete function which also manages this
+     */
+    std::vector<Object*> SceneObjects = {
+        &Moon,
+        &Earth,
+        &Cube
+    };
 
     while (!display.IsClosed()){
         glClearColor(0.0f, 0.15f, 0.3f, 1.0f); // Sets the background color
@@ -106,17 +118,12 @@ int main() {
         Moon.Accelerate(acc_pixels, simDeltaTime);
 
         // * Draw stuff
-        // Set colors
-        Earth.SetColor(glm::vec3(1.0f, 1.0f, 0));
-        Moon.SetColor(glm::vec3(0, 1.0f, 1.0f));
-        Cube.SetColor(glm::vec3(0, 0, 0));
-
         Moon.UpdatePosition(deltaTime); // Update positions
         Logs::ShowPlanetTelemetryInMeters(Moon, METERS_PER_PIXEL);
 
-        renderer.Draw(Earth);
-        renderer.Draw(Moon);
-        renderer.Draw(Cube);
+        for (const auto& obj : SceneObjects){
+            renderer.Draw(*obj);
+        }
         renderer.Draw(distLine);
 
         display.Update();
