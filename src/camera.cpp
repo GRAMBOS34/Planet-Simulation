@@ -63,7 +63,7 @@ void Camera::RotateCamera(float deltaPitch, float deltaYaw){
  * Continuously poll the keyboard to update the camera
  * position to create movement
  */
-void Camera::UpdateCameraPosition(SDL_Event& event){
+void Camera::UpdateCameraPosition(){
     const Uint8* keystate = SDL_GetKeyboardState(NULL);
 
     // * Camera Positioning

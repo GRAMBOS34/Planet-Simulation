@@ -96,7 +96,7 @@ int main() {
         float simDeltaTime = TIME_SCALE_MULTIPLIER * deltaTime;
 
         // * Camera Input
-        camera.UpdateCameraPosition(event);
+        camera.UpdateCameraPosition();
 
         // * Move the line's endpoints
         glm::vec3 EarthPos = Earth.transform.GetPosition();
@@ -139,5 +139,5 @@ void UpdateLineMesh(glm::vec3& startPos, glm::vec3& endPos, Mesh& line){
     std::vector<Vertex> lineVertices = {Vertex(startPos), Vertex(endPos)};
 
     glBindBuffer(GL_ARRAY_BUFFER, line.GetVBO());
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(lineVertices), lineVertices.data());
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(lineVertices) * lineVertices.size(), lineVertices.data());
 }
