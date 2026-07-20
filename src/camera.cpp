@@ -8,7 +8,7 @@
 #include <glm/geometric.hpp>
 
 const float MOVEMENT_SPEED_PX = 1.5f;
-const float ROTATION_SPEED_SENS = 1.0f;
+const float ROTATION_SPEED_SENS = 0.7f;
 
 const glm::vec3 globalUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -31,6 +31,9 @@ Camera::Camera(const glm::vec3 &pos, float fov, float aspect, float zNear, float
     m_localUp = glm::vec3(0, 1, 0);
 
     m_localRight = glm::normalize(glm::cross(m_localForward, globalUp));
+
+    m_pitch = 0;
+    m_yaw = 0;
 }
 
 void Camera::RotateCamera(float deltaPitch, float deltaYaw){
@@ -46,9 +49,9 @@ void Camera::RotateCamera(float deltaPitch, float deltaYaw){
     // This shit uses some fairly complex linear algebra
     // which I can't fully explain yet
     glm::vec3 newForward;
-    newForward.x = cos(m_pitch) * cos(m_yaw);
+    newForward.x = cos(m_pitch) * sin(m_yaw);
     newForward.y = sin(m_pitch);
-    newForward.z = cos(m_pitch) * sin(m_yaw);
+    newForward.z = -cos(m_pitch) * cos(m_yaw);
 
     // We normalize the forward vector to make sure its magnitude stays at 1
     m_localForward = glm::normalize(newForward);
@@ -103,9 +106,7 @@ void Camera::UpdateCameraPosition(){
         SDL_GetRelativeMouseState(&yaw, &pitch); // Get relative position instead of absolute position
         SDL_ShowCursor(SDL_DISABLE); // Hide cursor
 
-        // This is here mainly to avoid the camera suddenly turning when
-        // the middle mouse button is clicked
-        if (isRelativeMode == true){
+        if (isRelativeMode){
             // Pitch is negative because I prefer moving down to go down
             // Although I can probably make this togglable at some point
             RotateCamera(-pitch, yaw);
