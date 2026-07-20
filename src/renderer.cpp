@@ -1,6 +1,5 @@
 #include "../include/renderer.hpp"
 
-
 // This renderer class exists because the camera and shader are things
 // that each object uses
 Renderer::Renderer(Camera* camera, Shader* shader){
@@ -22,5 +21,5 @@ void Renderer::Draw(Object& object){
     // Update the color
     m_shader->SetColor(object.GetColor());
 
-    object.mesh->Draw(object.GetShapeType());
+    object.mesh->Draw();
 }

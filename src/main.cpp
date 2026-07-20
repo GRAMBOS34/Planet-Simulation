@@ -29,8 +29,6 @@ const float METERS_PER_PIXEL = 1.0e6f;
 void UpdateLineMesh(glm::vec3& startPos, glm::vec3& endPos, Mesh& line);
 
 int main() {
-    SDL_Event event;
-
     Display display(DISPLAY_WIDTH, DISPLAY_HEIGHT, "Physics Sim"); // Initialize the display window
 
     glEnable(GL_DEPTH_TEST); // Ensure we enable the depth thing so that we dont draw primitives over each other
@@ -49,22 +47,22 @@ int main() {
     // * Create the objects in the scene
     Mesh circle = PrimitiveShapes::Circle(20.0f);
     float moonDistMeters = 384.4e6f;
-    Object Moon(&circle, GL_TRIANGLE_FAN, glm::vec3(moonDistMeters/METERS_PER_PIXEL, 0, 0));
+    Object Moon(&circle, glm::vec3(moonDistMeters/METERS_PER_PIXEL, 0, 0));
     Moon.SetColor(glm::vec3(0, 1.0f, 1.0f));
     Moon.SetMass(7.348e22); // in kg
     Moon.SetVelocity(glm::vec3(0, 1.0f, 0)); // Initial push velocity
 
-    Object Earth(&circle, GL_TRIANGLE_FAN, glm::vec3(0, 0, 0));
+    Object Earth(&circle, glm::vec3(0, 0, 0));
     Earth.SetColor(glm::vec3(1.0f, 1.0f, 0));
 
-    Mesh square = PrimitiveShapes::Quad(20.0f, 20.0f);
-    Object Cube(&square, GL_TRIANGLES, glm::vec3(0, 0, 20.0f));
+    Mesh square = PrimitiveShapes::Quad(40.0f, 20.0f);
+    Object Cube(&square, glm::vec3(0, 0, 20.0f));
     Cube.SetColor(glm::vec3(0, 0, 0));
 
     Earth.SetMass(5.972e24); // in kg
 
     Mesh line = PrimitiveShapes::Line(Moon.transform.GetPosition(), Earth.transform.GetPosition());
-    Object distLine(&line, GL_LINES);
+    Object distLine(&line, glm::vec3(0, 0, 0));
     distLine.SetColor(glm::vec3(0, 0, 0));
 
     // * Scene object vector
@@ -122,7 +120,7 @@ int main() {
 
         // * Draw stuff
         Moon.UpdatePosition(deltaTime); // Update positions
-        Logs::ShowPlanetTelemetryInMeters(Moon, METERS_PER_PIXEL);
+        // Logs::ShowPlanetTelemetryInMeters(Moon, METERS_PER_PIXEL);
 
         for (const auto& obj : SceneObjects){
             renderer.Draw(*obj);
@@ -139,5 +137,5 @@ void UpdateLineMesh(glm::vec3& startPos, glm::vec3& endPos, Mesh& line){
     std::vector<Vertex> lineVertices = {Vertex(startPos), Vertex(endPos)};
 
     glBindBuffer(GL_ARRAY_BUFFER, line.GetVBO());
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(lineVertices) * lineVertices.size(), lineVertices.data());
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(lineVertices), lineVertices.data());
 }

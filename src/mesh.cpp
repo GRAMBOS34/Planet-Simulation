@@ -6,8 +6,9 @@
  * @param vertices - Vertex data of the mesh
  * @param numVertices - the number of verticies
  */
-Mesh::Mesh(Vertex *vertices, unsigned int numVertices){
+Mesh::Mesh(Vertex *vertices, unsigned int numVertices, GLenum glShapeType){
     m_drawCount = numVertices;
+    m_shapeType = glShapeType;
 
     glGenVertexArrays(1, &m_vertexArrayObject);
     glBindVertexArray(m_vertexArrayObject);
@@ -35,10 +36,10 @@ Mesh::~Mesh(){
 }
 
 // Draw something
-void Mesh::Draw(GLenum glShapeType) const {
+void Mesh::Draw() const {
     glBindVertexArray(m_vertexArrayObject);
 
-    glDrawArrays(glShapeType, 0, m_drawCount);
+    glDrawArrays(m_shapeType, 0, m_drawCount);
 
     glBindVertexArray(0);
 }
@@ -60,21 +61,20 @@ Mesh PrimitiveShapes::Circle(float radius, int edges){
         verticies.emplace_back(glm::vec3(x_point, y_point, 0)); // (x,y,z)
     }
 
-    return Mesh(verticies.data(), verticies.size());
+    return Mesh(verticies.data(), verticies.size(), GL_TRIANGLE_FAN);
 }
 
-Mesh PrimitiveShapes::Quad(float x, float y){
+// TODO: Make this form a quad given only x and y lengths
+Mesh PrimitiveShapes::Quad(float len_x, float len_y){
     std::vector<Vertex> vertices;
 
     vertices = {
-        // Bottom left triangle
-        Vertex(glm::vec3(0, 0, 0)), Vertex(glm::vec3(x, 0, 0)), Vertex(glm::vec3(0, y, 0)),
-
-        // top right triangle
-        Vertex(glm::vec3(0, y, 0)), Vertex(glm::vec3(x, y, 0)), Vertex(glm::vec3(x, 0, 0))
+        // Quad
+        // ! CAN ONLY BE WRITTEN LIKE THIS WHEN USING GL_TRIANGLE_STRIP
+        Vertex(glm::vec3(0, 0, 0)), Vertex(glm::vec3(len_x, 0, 0)), Vertex(glm::vec3(0, len_y, 0)), Vertex(glm::vec3(len_x, len_y, 0))
     };
 
-    return Mesh(vertices.data(), vertices.size());
+    return Mesh(vertices.data(), vertices.size(), GL_TRIANGLE_STRIP);
 }
 
 Mesh PrimitiveShapes::Line(glm::vec3& startPos, glm::vec3& endPos){
@@ -82,5 +82,13 @@ Mesh PrimitiveShapes::Line(glm::vec3& startPos, glm::vec3& endPos){
         Vertex(startPos), Vertex(endPos)
     };
 
-    return Mesh(vertices.data(), vertices.size());
+    return Mesh(vertices.data(), vertices.size(), GL_LINES);
+}
+
+Mesh PrimitiveShapes::Sphere(float radius){
+    std::vector<Vertex> vertices;
+
+    // TODO: Make a function to make spheres
+
+    return Mesh(vertices.data(), vertices.size(), GL_TRIANGLE_STRIP);
 }

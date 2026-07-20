@@ -10,6 +10,7 @@ This project is mainly for me to learn OpenGL, graphics programming, and physics
 
 - Draw stuff on the screen ✅
 - Add camera controls (zoom, pitch, and yaw) ✅
+- Draw a grid on the xz-plane
 - Show fps count
 - Have a way to delete objects outside a certain area during runtime (For collisions, not occlusion culling, that's a different beast)
 - Implement quaternions for rotation instead of Euler angles

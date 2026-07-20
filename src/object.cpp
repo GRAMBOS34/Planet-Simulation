@@ -10,9 +10,8 @@
  */
 Object::Object(
     const Mesh* mesh,
-    GLenum glShapeType,
     glm::vec3 position
-) : mesh(mesh), m_shapeTypeVal(glShapeType){
+) : mesh(mesh){
     transform.SetPosition(position);
 
     // Because for some reason it won't work properly

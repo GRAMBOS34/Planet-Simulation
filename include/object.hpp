@@ -12,7 +12,6 @@ public:
 
     Object(
         const Mesh* mesh,
-        GLenum glShapeType,
         glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f)
     );
 
@@ -25,7 +24,6 @@ public:
     virtual ~Object() = default;
 
     // Getters
-    inline GLenum GetShapeType() { return m_shapeTypeVal; }
     inline glm::vec3 GetAcceleration() { return m_acceleration; }
     inline glm::vec3 GetVelocity() { return m_velocity; }
     inline glm::vec3 GetColor() { return m_color; }
@@ -40,7 +38,6 @@ private:
     Camera* m_camera = nullptr;
     Shader* m_shader = nullptr;
 
-    GLenum m_shapeTypeVal;
     glm::vec3 m_color;
 
     // Physics values
