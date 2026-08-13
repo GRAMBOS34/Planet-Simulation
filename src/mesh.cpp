@@ -116,8 +116,8 @@ Mesh PrimitiveShapes::Sphere(float radius){
 }
 
 /**
- * gridSize is in number of segments rather than pixels
- * segmentSideLength is in pixels
+ * gridSegNumPerAxis is in number of segments rather than pixels
+ * segmentSideLengthPX is in pixels
  */
 Mesh PrimitiveShapes::SquareGrid(float segmentSideLengthPX, glm::vec2 gridSegNumPerAxis){
     std::vector<Vertex> vertices;
