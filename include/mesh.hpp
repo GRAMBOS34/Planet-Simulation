@@ -7,7 +7,7 @@
 class Vertex {
 public:
     Vertex(const glm::vec3& pos) {
-        this -> pos = pos;
+        this->pos = pos;
     }
 private:
     glm::vec3 pos;
@@ -45,9 +45,15 @@ private:
 
 namespace PrimitiveShapes {
     Mesh Circle (float radius, int sides = 20);
-    Mesh Quad(float x, float y);
+    Mesh Quad(Vertex v0, Vertex v1, Vertex v2, Vertex v3);
     Mesh Line(glm::vec3& startPos, glm::vec3& endPos);
     Mesh Sphere(float radius);
+
+    /**
+     * float segmentSideLengthPX - side length of each grid square in PX
+     * glm::vec2 gridSegNumPerAxis - number of segments per axis
+     */
+    Mesh SquareGrid(float segmentSideLengthPX, glm::vec2 gridSegNumPerAxis);
 };
 
 #endif

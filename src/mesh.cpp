@@ -44,7 +44,10 @@ void Mesh::Draw() const {
     glBindVertexArray(0);
 }
 
-// ! ---------------- PRIMITIVE SHAPES -------------------------
+// ? ---------------- PRIMITIVE SHAPES -------------------------
+
+const int SECTOR_COUNT = 20; // Determines how "sharp" curves look
+const float PI = 3.14159f;
 
 // * This function only creates a 2D circle
 Mesh PrimitiveShapes::Circle(float radius, int edges){
@@ -54,7 +57,7 @@ Mesh PrimitiveShapes::Circle(float radius, int edges){
     verticies.emplace_back(glm::vec3(0,0,0)); // Add the centre point
 
     for (int i = 0; i <= edges; i++){
-        float angle = 2.0f * 3.14159f * i / edges; // Calculate angle in radians
+        float angle = 2.0f * PI * i / edges; // Calculate angle in radians
         float x_point = (radius * cos(angle));
         float y_point = (radius * sin(angle));
 
@@ -64,17 +67,22 @@ Mesh PrimitiveShapes::Circle(float radius, int edges){
     return Mesh(verticies.data(), verticies.size(), GL_TRIANGLE_FAN);
 }
 
-// TODO: Make this form a quad given only x and y lengths
-Mesh PrimitiveShapes::Quad(float len_x, float len_y){
-    std::vector<Vertex> vertices;
+Mesh PrimitiveShapes::Quad(Vertex v0, Vertex v1, Vertex v2, Vertex v3){
+    std::vector<Vertex> vertices = {v0, v1, v2, v1, v2, v3};
 
-    vertices = {
-        // Quad
-        // ! CAN ONLY BE WRITTEN LIKE THIS WHEN USING GL_TRIANGLE_STRIP
-        Vertex(glm::vec3(0, 0, 0)), Vertex(glm::vec3(len_x, 0, 0)), Vertex(glm::vec3(0, len_y, 0)), Vertex(glm::vec3(len_x, len_y, 0))
-    };
+    return Mesh(vertices.data(), vertices.size(), GL_TRIANGLES);
+}
 
-    return Mesh(vertices.data(), vertices.size(), GL_TRIANGLE_STRIP);
+void GenerateQuad(std::vector<Vertex>& vertices, Vertex v0, Vertex v1, Vertex v2, Vertex v3){
+    // Bottom left triangle
+    vertices.push_back(v0);
+    vertices.push_back(v1);
+    vertices.push_back(v2);
+
+    // Top right triangle
+    vertices.push_back(v1);
+    vertices.push_back(v2);
+    vertices.push_back(v3);
 }
 
 Mesh PrimitiveShapes::Line(glm::vec3& startPos, glm::vec3& endPos){
@@ -85,10 +93,57 @@ Mesh PrimitiveShapes::Line(glm::vec3& startPos, glm::vec3& endPos){
     return Mesh(vertices.data(), vertices.size(), GL_LINES);
 }
 
+const int STACK_COUNT = 10;
+
 Mesh PrimitiveShapes::Sphere(float radius){
     std::vector<Vertex> vertices;
 
     // TODO: Make a function to make spheres
 
-    return Mesh(vertices.data(), vertices.size(), GL_TRIANGLE_STRIP);
+    for (int i = 0; i <= STACK_COUNT; i++){
+        float stackAngle = PI / 2.0f - i * (PI / STACK_COUNT); // From PI/2 to -PI/2
+
+        for (int j = 0; j <= SECTOR_COUNT; j++){
+            float angle = 2.0f * PI * j / SECTOR_COUNT; // Calculate angle in radians
+            float x_point = (radius * cos(angle));
+            float z_point = (radius * sin(angle));
+
+            vertices.emplace_back(glm::vec3(x_point, 0, z_point)); // (x,y,z)
+        }
+    }
+
+    return Mesh(vertices.data(), vertices.size(), GL_TRIANGLES);
+}
+
+/**
+ * gridSize is in number of segments rather than pixels
+ * segmentSideLength is in pixels
+ */
+Mesh PrimitiveShapes::SquareGrid(float segmentSideLengthPX, glm::vec2 gridSegNumPerAxis){
+    std::vector<Vertex> vertices;
+
+    float lineLengthHorizontal = segmentSideLengthPX * gridSegNumPerAxis.x;
+    float lineLengthVertical = segmentSideLengthPX * gridSegNumPerAxis.y;
+
+    // Loop for the horizontal axis/vertical lines
+    // Starts at index 1 to avoid creating two borders
+    for (int i = 1; i < gridSegNumPerAxis.x; i++){
+        float segmentDistFromFirstLine = segmentSideLengthPX * i;
+
+        vertices.emplace_back(glm::vec3(segmentDistFromFirstLine, 0, 0)); // Start point
+
+        vertices.emplace_back(glm::vec3(segmentDistFromFirstLine, 0, lineLengthHorizontal)); // End Point
+    }
+
+    // Loop for vertical axis/horizontal lines
+    // Starts at index 1 to avoid creating two borders
+    for (int j = 1; j < gridSegNumPerAxis.y; j++){
+        float segmentDistFromFirstLine = segmentSideLengthPX * j;
+
+        vertices.emplace_back(glm::vec3(0, 0, segmentDistFromFirstLine)); // Start point
+
+        vertices.emplace_back(glm::vec3(lineLengthHorizontal, 0, segmentDistFromFirstLine)); // End Point
+    }
+
+    return Mesh(vertices.data(), vertices.size(), GL_LINES);
 }
